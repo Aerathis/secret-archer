@@ -1,3 +1,5 @@
+//Package secret-archer provides a load tester for a ZooTycoon server
+
 package main
 
 import (       
@@ -21,5 +23,6 @@ func main() {
         return
     }
     
-    configloader.GetConfig(configFile)
+    testConfiguration := configloader.GetConfig(configFile)
+    fmt.Println(testConfiguration)
 }

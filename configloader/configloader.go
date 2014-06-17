@@ -1,13 +1,12 @@
 package configloader
 
 import (
-    "io/ioutil"
-    "fmt"
+    "io/ioutil"    
     
     . "github.com/Aerathis/secret-archer/configparser"
 )
 
-func GetConfig(configFile string) (config HostConfiguration) {
+func GetConfig(configFile string) (config *HostConfiguration) {
     configContents, err := ioutil.ReadFile(configFile)
     if err != nil {
         panic(err)
@@ -15,14 +14,9 @@ func GetConfig(configFile string) (config HostConfiguration) {
     
     configString := string(configContents[:])    
     
-    configs, configErr := ParseConfigString(configString)
+    config, configErr := ParseConfigString(configString)
     if configErr != nil {
         panic(configErr)
-    }
-    
-    fmt.Println(configs)
-    
-    commandList := []CommandConfiguration{CommandConfiguration{"", ""}}
-    config = HostConfiguration{"", "0", commandList}
+    }                  
     return
 }
