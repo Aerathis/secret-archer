@@ -1,6 +1,6 @@
 package configparser
 
-//import "strconv"
+import "errors"
 
 type CommandConfiguration struct {
     CommandName string
@@ -11,10 +11,6 @@ type HostConfiguration struct {
     HostName string
     Port string
     Commands []CommandConfiguration
-}
-
-type ConfigurationError struct {
-    Message string
 }
 
 func lines(input string) (lines []string) {
@@ -29,7 +25,7 @@ func lines(input string) (lines []string) {
     return
 }
 
-func parseLine(input string) (lineLabel string, lineValue string, err *ConfigurationError) {
+func parseLine(input string) (lineLabel string, lineValue string, err error) {
     processed := false
     lineLabel = ""
     lineValue = ""    
@@ -46,12 +42,12 @@ func parseLine(input string) (lineLabel string, lineValue string, err *Configura
     if lineLabel == "" || lineValue == "" {
         lineLabel = ""
         lineValue = ""
-        err = &ConfigurationError{"Malformed Configuration line"}        
+        err = errors.New("Malformed Configuration Line")        
     }
     return
 }
 
-func ParseConfigString(input string) (resultConfig *HostConfiguration, err *ConfigurationError) {
+func ParseConfigString(input string) (resultConfig *HostConfiguration, err error) {
     hostName := ""
     port := "-1"
     
@@ -80,7 +76,7 @@ func ParseConfigString(input string) (resultConfig *HostConfiguration, err *Conf
         err = nil
     } else {
         resultConfig = nil
-        err = &ConfigurationError {"Not Implemented"}
+        err = errors.New("Not Implemented")        
     }    
     return
 }

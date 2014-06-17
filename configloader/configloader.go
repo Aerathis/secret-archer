@@ -19,7 +19,7 @@ func GetConfig(configFile string) (config HostConfiguration) {
     
     configs, configErr := ParseConfigString(configString)
     if configErr != nil {
-        panic(configErr.Message)
+        panic(configErr)
     }
     
     fmt.Println(configs)
