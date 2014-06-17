@@ -22,6 +22,7 @@ func lines(input string) (lines []string) {
             lineStart = i + 1;
         }
     }
+    lines = append(lines, input[lineStart:])
     return
 }
 
@@ -53,9 +54,9 @@ func ParseConfigString(input string) (resultConfig *HostConfiguration, err error
     
     commandList := make([]CommandConfiguration, 0, 0)
     
-    configLines := lines(input)
+    configLines := lines(input)       
     
-    for i := 0; i < len(configLines); i++ {
+    for i := 0; i < len(configLines); i++ {        
         label, value, lineErr := parseLine(configLines[i])
         if lineErr != nil {
             err = lineErr
@@ -72,7 +73,7 @@ func ParseConfigString(input string) (resultConfig *HostConfiguration, err error
     }
     
     if hostName != "" && port != "-1" {
-        resultConfig = &HostConfiguration {hostName, port, make([]CommandConfiguration, 0, 0)}
+        resultConfig = &HostConfiguration {hostName, port, commandList}
         err = nil
     } else {
         resultConfig = nil

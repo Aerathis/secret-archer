@@ -13,9 +13,7 @@ func GetConfig(configFile string) (config HostConfiguration) {
         panic(err)
     }
     
-    configString := string(configContents[:])
-    
-    fmt.Println(configString)
+    configString := string(configContents[:])    
     
     configs, configErr := ParseConfigString(configString)
     if configErr != nil {
