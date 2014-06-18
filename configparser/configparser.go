@@ -5,6 +5,7 @@ import "errors"
 type CommandConfiguration struct {
     CommandName string
     CommandUri string
+    CommandData string
 }
 
 type HostConfiguration struct {
@@ -48,6 +49,30 @@ func parseLine(input string) (lineLabel string, lineValue string, err error) {
     return
 }
 
+func extractCommandData(input string) (commandValue string, commandData string, err error) {
+    processed := false
+    commandValue = ""
+    commandData = ""
+    err = nil
+    for i := 0; i < len(input); i++ {
+        if !processed {
+            if input[i] == '~' {
+                commandValue = input[0:i]
+                if i < len(input) + 1 {
+                    commandData = input[i+1:]   
+                }                
+                processed = true                
+            }
+        }
+    }
+    if commandValue == "" {
+        commandValue = ""
+        commandData = ""
+        err = errors.New("Malformed Command Data")
+    }
+    return
+}
+
 func ParseConfigString(input string) (resultConfig *HostConfiguration, err error) {
     hostName := ""
     port := "-1"
@@ -67,8 +92,13 @@ func ParseConfigString(input string) (resultConfig *HostConfiguration, err error
             hostName = value
         } else if label == "Port" {
             port = value
-        } else {
-            commandList = append(commandList, CommandConfiguration{label, value})
+        } else {         
+            commandValue, commandData, commandErr := extractCommandData(value)
+            if commandErr != nil {
+                err = commandErr
+                return
+            }
+            commandList = append(commandList, CommandConfiguration{label, commandValue, commandData})
         }        
     }
     
