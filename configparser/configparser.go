@@ -27,48 +27,24 @@ func lines(input string) (lines []string) {
     return
 }
 
-func parseLine(input string) (lineLabel string, lineValue string, err error) {
+func chop(input string, chopPoint byte) (front string, back string, err error) {
     processed := false
-    lineLabel = ""
-    lineValue = ""    
+    front = ""
+    back = ""
     err = nil
     for i := 0; i < len(input); i++ {
         if !processed {
-            if input[i] == '|' {
-                lineLabel = input[0:i]
-                lineValue = input[i+1:]
-                processed = true
-            }
-        }        
-    }
-    if lineLabel == "" || lineValue == "" {
-        lineLabel = ""
-        lineValue = ""
-        err = errors.New("Malformed Configuration Line")        
-    }
-    return
-}
-
-func extractCommandData(input string) (commandValue string, commandData string, err error) {
-    processed := false
-    commandValue = ""
-    commandData = ""
-    err = nil
-    for i := 0; i < len(input); i++ {
-        if !processed {
-            if input[i] == '~' {
-                commandValue = input[0:i]
-                if i < len(input) + 1 {
-                    commandData = input[i+1:]   
+            if input[i] == chopPoint {
+                front = input[0:i]
+                if i < len(input) {
+                    back = input[i+1:]
                 }                
-                processed = true                
+                processed = true
             }
         }
     }
-    if commandValue == "" {
-        commandValue = ""
-        commandData = ""
-        err = errors.New("Malformed Command Data")
+    if front == "" {
+        err = errors.New("Cannot chop this string")
     }
     return
 }
@@ -82,7 +58,7 @@ func ParseConfigString(input string) (resultConfig *HostConfiguration, err error
     configLines := lines(input)       
     
     for i := 0; i < len(configLines); i++ {        
-        label, value, lineErr := parseLine(configLines[i])
+        label, value, lineErr := chop(configLines[i], '|')
         if lineErr != nil {
             err = lineErr
             return
@@ -93,7 +69,7 @@ func ParseConfigString(input string) (resultConfig *HostConfiguration, err error
         } else if label == "Port" {
             port = value
         } else {         
-            commandValue, commandData, commandErr := extractCommandData(value)
+            commandValue, commandData, commandErr := chop(value, '~')
             if commandErr != nil {
                 err = commandErr
                 return
