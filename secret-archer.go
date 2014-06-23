@@ -5,8 +5,7 @@ package main
 import (       
     "os" 
     "fmt"
-    "github.com/Aerathis/secret-archer/configloader"
-    "github.com/Aerathis/secret-archer/sendtest"
+    "github.com/Aerathis/secret-archer/config"    
 )
 
 func main() {
@@ -26,11 +25,8 @@ func main() {
         return
     }
     
-    testConfiguration := configloader.GetConfig(configFile)      
+    testConfiguration := config.GetConfig(configFile)
     fmt.Println(testConfiguration)
     
-    testConfiguration.SendTest()
-    
-    testResp := sendtest.TestNet()
-    fmt.Println(testResp.Body)
+    testConfiguration.SendTest()       
 }

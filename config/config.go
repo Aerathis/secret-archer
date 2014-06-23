@@ -1,8 +1,9 @@
-package configparser
+package config
 
 import (
     "github.com/Aerathis/secret-archer/sendtest"
     "errors"
+    "io/ioutil"
 )
 
 func lines(input string) (lines []string) {
@@ -76,5 +77,20 @@ func ParseConfigString(input string) (resultConfig *sendtest.HostConfiguration, 
         resultConfig = nil
         err = errors.New("Not Implemented")        
     }    
+    return
+}
+
+func GetConfig(configFile string) (config *sendtest.HostConfiguration) {
+    configContents, err := ioutil.ReadFile(configFile)
+    if err != nil {
+        panic(err)
+    }
+    
+    configString := string(configContents[:])    
+    
+    config, configErr := ParseConfigString(configString)
+    if configErr != nil {
+        panic(configErr)
+    }                  
     return
 }
