@@ -29,6 +29,8 @@ func main() {
     testConfiguration := configloader.GetConfig(configFile)      
     fmt.Println(testConfiguration)
     
+    testConfiguration.SendTest()
+    
     testResp := sendtest.TestNet()
     fmt.Println(testResp.Body)
 }

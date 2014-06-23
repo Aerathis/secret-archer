@@ -1,18 +1,9 @@
 package configparser
 
-import "errors"
-
-type CommandConfiguration struct {
-    CommandName string
-    CommandUri string
-    CommandData string
-}
-
-type HostConfiguration struct {
-    HostName string
-    Port string
-    Commands []CommandConfiguration
-}
+import (
+    "github.com/Aerathis/secret-archer/sendtest"
+    "errors"
+)
 
 func lines(input string) (lines []string) {
     lines = make([]string, 0, 0)
@@ -49,11 +40,11 @@ func chop(input string, chopPoint byte) (front string, back string, err error) {
     return
 }
 
-func ParseConfigString(input string) (resultConfig *HostConfiguration, err error) {
+func ParseConfigString(input string) (resultConfig *sendtest.HostConfiguration, err error) {
     hostName := ""
     port := "-1"
     
-    commandList := make([]CommandConfiguration, 0, 0)
+    commandList := make([]sendtest.CommandConfiguration, 0, 0)
     
     configLines := lines(input)       
     
@@ -74,12 +65,12 @@ func ParseConfigString(input string) (resultConfig *HostConfiguration, err error
                 err = commandErr
                 return
             }
-            commandList = append(commandList, CommandConfiguration{label, commandValue, commandData})
+            commandList = append(commandList, sendtest.CommandConfiguration{label, commandValue, commandData})
         }        
     }
     
     if hostName != "" && port != "-1" {
-        resultConfig = &HostConfiguration {hostName, port, commandList}
+        resultConfig = &sendtest.HostConfiguration {hostName, port, commandList}
         err = nil
     } else {
         resultConfig = nil

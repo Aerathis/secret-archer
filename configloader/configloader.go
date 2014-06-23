@@ -3,6 +3,7 @@ package configloader
 import (
     "io/ioutil"    
     
+    . "github.com/Aerathis/secret-archer/sendtest"
     . "github.com/Aerathis/secret-archer/configparser"
 )
 
