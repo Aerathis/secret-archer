@@ -9,7 +9,7 @@ import (
 func lines(input string) (lines []string) {
     lines = make([]string, 0, 0)
     lineStart := 0
-    for i := 0; i < len(input); i++ {
+    for i := range input {
         if input[i] == '\n' {
             lines = append(lines, input[lineStart:i])
             lineStart = i + 1;
@@ -24,7 +24,7 @@ func chop(input string, chopPoint byte) (front string, back string, err error) {
     front = ""
     back = ""
     err = nil
-    for i := 0; i < len(input); i++ {
+    for i := range input {
         if !processed {
             if input[i] == chopPoint {
                 front = input[0:i]
@@ -49,7 +49,7 @@ func ParseConfigString(input string) (resultConfig *sendtest.HostConfiguration, 
     
     configLines := lines(input)       
     
-    for i := 0; i < len(configLines); i++ {        
+    for i := range configLines {        
         label, value, lineErr := chop(configLines[i], '|')
         if lineErr != nil {
             err = lineErr
