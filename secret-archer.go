@@ -28,5 +28,5 @@ func main() {
     testConfiguration := config.GetConfig(configFile)
     fmt.Println(testConfiguration)
     
-    testConfiguration.SendTest()       
+    testConfiguration.SendTest()    
 }

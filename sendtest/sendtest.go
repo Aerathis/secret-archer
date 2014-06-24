@@ -2,6 +2,9 @@ package sendtest
 
 import (    
     "net/http"
+    "io/ioutil"
+    "strings"
+    "fmt"
 )
 
 type CommandConfiguration struct {
@@ -16,18 +19,19 @@ type HostConfiguration struct {
     Commands []CommandConfiguration
 }
 
-func (config *HostConfiguration) SendTest() *http.Response {
-    resp, err := http.Get(config.HostName)
-    if err != nil {
-        panic(err)
-    }
-    return resp
-}
-
-func TestNet() *http.Response {
-    resp, err := http.Get("http://google.com")
-    if err != nil {
-        panic(err)
-    }
-    return resp
+func (config *HostConfiguration) SendTest() () {
+    // Iterate over the commands list
+    for i := range config.Commands {
+        url := config.HostName + "/" + config.Commands[i].CommandUri
+        resp, err := http.Post(url, "application/json", strings.NewReader(config.Commands[i].CommandData))
+        if err != nil {
+            panic(err)
+        }
+        defer resp.Body.Close()
+        body, err := ioutil.ReadAll(resp.Body)
+        if err != nil {
+            panic(err)
+        }
+        fmt.Println(string(body))
+    }        
 }
