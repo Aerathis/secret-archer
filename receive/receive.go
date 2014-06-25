@@ -15,9 +15,9 @@ type BaseReceiver struct {
 
 // Base implementation for a TestReceiver
 func (r BaseReceiver) ReceiveResponse(resp *http.Response, channel chan string) {
-    body, err := ioutil.ReadAll(resp.Body)
+    _, err := ioutil.ReadAll(resp.Body)
     if err != nil {
         panic(err)
     }
-    channel <- string(body)
+    channel <- string(r.UserName)
 }
