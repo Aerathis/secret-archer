@@ -1,10 +1,10 @@
 package sendtest
 
 import (    
-    "net/http"
-    "io/ioutil"
+    "net/http"    
     "strings"
-    "fmt"
+    
+    "github.com/Aerathis/secret-archer/receive"
 )
 
 type CommandConfiguration struct {
@@ -39,7 +39,8 @@ func replaceUserToken(rawString, token string) (replacedString string) {
     return
 }
 
-func (config *HostConfiguration) SendTest(userToken string) () {    
+func (config *HostConfiguration) SendTest(userToken string, channel chan string) () {
+    receiver := receive.BaseReceiver{userToken}
     for i := range config.Commands {
         url := config.HostName + "/" + config.Commands[i].CommandUri
         rawData := config.Commands[i].CommandData
@@ -49,10 +50,6 @@ func (config *HostConfiguration) SendTest(userToken string) () {
             panic(err)
         }
         defer resp.Body.Close()
-        body, err := ioutil.ReadAll(resp.Body)
-        if err != nil {
-            panic(err)
-        }
-        fmt.Println(string(body))
+        receiver.ReceiveResponse(resp, channel)
     }        
 }
