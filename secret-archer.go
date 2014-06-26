@@ -35,13 +35,15 @@ func main() {
     fmt.Println(testConfiguration)
     
     c := make(chan string)
-    m := monitor.BaseMonitor {c}
+    d := make(chan string)
+    m := monitor.FileOutputMonitor{c, "testreport", true, d}
     go m.Start()
     for i := 0; i < int(concurrencyLevel); i++ {
         userString := "stresstestuser" + strconv.Itoa(i)
         go testConfiguration.SendTest(userString, c)
     }
     
-    for m.Running() {        
+    for m.Running() {     
+        fmt.Println(<-d)
     }
 }
