@@ -6,7 +6,8 @@ import (
     "os" 
     "fmt"
     "strconv"
-    "github.com/Aerathis/secret-archer/config"    
+    "github.com/Aerathis/secret-archer/config"
+    "github.com/Aerathis/secret-archer/monitor"
 )
 
 func main() {
@@ -34,12 +35,13 @@ func main() {
     fmt.Println(testConfiguration)
     
     c := make(chan string)
-    
+    m := monitor.BaseMonitor {c}
+    go m.Start()
     for i := 0; i < int(concurrencyLevel); i++ {
         userString := "stresstestuser" + strconv.Itoa(i)
         go testConfiguration.SendTest(userString, c)
     }
-    for {
-        fmt.Println(<-c)
-    }    
+    
+    for m.Running() {        
+    }
 }
