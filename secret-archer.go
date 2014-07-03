@@ -13,7 +13,7 @@ import (
 func main() {
     argsToProg := os.Args[1:]       
     
-    if len(argsToProg) != 2 {
+    if len(argsToProg) != 3 {
         // Print usage notes
         fmt.Println("Not enough args")
         return
@@ -26,6 +26,8 @@ func main() {
         panic(err)
     }
     
+    reportFile := argsToProg[2]    
+    
     if _, err := os.Stat(configFile); os.IsNotExist(err) {
         fmt.Println("Config file not present -", configFile)
         return
@@ -36,7 +38,7 @@ func main() {
     
     c := make(chan string)
     d := make(chan string)
-    m := monitor.FileOutputMonitor{c, "testreport", true, d}
+    m := monitor.FileOutputMonitor{c, reportFile, true, d}
     go m.Start()
     for i := 0; i < int(concurrencyLevel); i++ {
         userString := "stresstestuser" + strconv.Itoa(i)

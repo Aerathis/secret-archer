@@ -19,6 +19,12 @@ type HostConfiguration struct {
     Commands []CommandConfiguration
 }
 
+type UserRequest struct {
+    receiver receive.BaseReceiver
+    userToken string
+    session string
+}
+
 func replaceUserToken(rawString, token string) (replacedString string) {
     resultBytes := make([]byte, 0)
     replaced := false
@@ -40,7 +46,7 @@ func replaceUserToken(rawString, token string) (replacedString string) {
 }
 
 func (config *HostConfiguration) SendTest(userToken string, channel chan string) () {
-    receiver := receive.BaseReceiver{userToken}
+    receiver := receive.SessionReceiver{userToken, ""}
     for i := range config.Commands {
         url := config.HostName + "/" + config.Commands[i].CommandUri
         rawData := config.Commands[i].CommandData
