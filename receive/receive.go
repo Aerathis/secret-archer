@@ -2,10 +2,10 @@ package receive
 
 import (
     "errors"
-    "strings"
-    //"strconv"
+    "strings"    
     "net/http"
-    "io/ioutil"    
+    "io/ioutil"
+    "encoding/json"
 )
 
 type TestReceiver interface {
@@ -21,7 +21,40 @@ type SessionReceiver struct {
     UserSession string    
 }
 
-func extractSession(json string) (session string, err error) {
+func extractSession(jsonString string) (session string, err error) {
+    session = ""
+    var f interface{}
+    err = json.Unmarshal([]byte(jsonString), &f)
+    if err != nil {        
+        return
+    }
+    
+    response := f.(map[string]interface{})   
+    
+    if _, ok := response["Code"]; ok {
+        for k,v := range response {
+            if k == "Message" {
+                switch vv := v.(type) {
+                case string:
+                    err = errors.New(vv)
+                }
+            }
+        }
+    } else {
+        if list, ok := response["DataList"]; ok {
+            li := list.(map[string]interface{})
+            for k, v := range li {
+                if k == "SSID" {
+                    vv := v.(string)
+                    session = vv
+                }
+            }
+        }
+    }
+    return
+}
+
+func extractSessionOld(json string) (session string, err error) {
     session = ""
     err = nil
     if !strings.Contains(json, "SSID") {
