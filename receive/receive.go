@@ -34,10 +34,8 @@ func extractSession(jsonString string) (session string, err error) {
     if _, ok := response["Code"]; ok {
         for k,v := range response {
             if k == "Message" {
-                switch vv := v.(type) {
-                case string:
-                    err = errors.New(vv)
-                }
+                vv := v.(string);
+                err = errors.New(vv)
             }
         }
     } else {
