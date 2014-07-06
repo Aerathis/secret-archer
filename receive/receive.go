@@ -33,18 +33,16 @@ func extractSession(jsonString string) (session string, err error) {
     
     if _, ok := response["Code"]; ok {
         for k,v := range response {
-            if k == "Message" {
-                vv := v.(string);
-                err = errors.New(vv)
+            if k == "Message" {                
+                err = errors.New(v.(string))
             }
         }
     } else {
         if list, ok := response["DataList"]; ok {
             li := list.(map[string]interface{})
             for k, v := range li {
-                if k == "SSID" {
-                    vv := v.(string)
-                    session = vv
+                if k == "SSID" {                    
+                    session = v.(string)
                 }
             }
         }
