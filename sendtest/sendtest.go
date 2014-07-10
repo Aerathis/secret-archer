@@ -1,6 +1,8 @@
+// Package sendtest is a package that handles the sending of test requests to the server
 package sendtest
 
 import (    
+    "errors"
     "net/http"    
     "strings"
     
@@ -17,12 +19,6 @@ type HostConfiguration struct {
     HostName string
     Port string
     Commands []CommandConfiguration
-}
-
-type UserRequest struct {
-    receiver receive.BaseReceiver
-    userToken string
-    session string
 }
 
 func replaceUserToken(rawString, token string) (replacedString string) {
@@ -42,6 +38,17 @@ func replaceUserToken(rawString, token string) (replacedString string) {
         }        
     }
     replacedString = string(resultBytes)
+    return
+}
+
+func replacePlaceholder(rawString, label, token string) (replacedString string, err error) {
+    //resultBytes := make([]byte, 0)
+    //replaced := false
+    if !strings.Contains(rawString, label) {
+        err = errors.New("String does not contain the specified label")
+        return
+    }
+    replacedString = ""
     return
 }
 
